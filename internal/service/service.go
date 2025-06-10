@@ -29,19 +29,16 @@ func Worker(id int, cfg models.Config, tasks <-chan int, mutexes []sync.Mutex, w
 			continue
 		}
 
-		// Обновление данных
 		data.UpdatedAt = time.Now()
 		data.Chain = append(data.Chain, id)
 		data.Text = generateText(20)
 
-		// Расчет времени выполнения
 		latency := time.Since(start)
 		if data.Latencies == nil {
 			data.Latencies = make(map[int]time.Duration)
 		}
 		data.Latencies[id] = latency
 
-		// Запись файла
 		if err := writeFile(filename, data); err != nil {
 			fmt.Printf("Worker %d write error: %v\n", id, err)
 		}
@@ -56,7 +53,7 @@ func readOrCreateFile(filename string) (*models.Data, error) {
 	file, err := os.ReadFile(filename)
 	if err != nil {
 		if os.IsNotExist(err) {
-			// Создаем новые данные
+
 			return &models.Data{
 				ID:        generateID(),
 				CreatedAt: time.Now(),
